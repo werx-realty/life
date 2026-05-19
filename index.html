@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moxie Life Insurance — Family First</title>
+  <meta name="description" content="Luxury life insurance solutions designed to secure your family's future for generations. Protect what matters most with Moxie Life." />
+  <meta name="keywords" content="life insurance, family life insurance, whole life insurance, protect your family, financial security, legacy planning" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+  <style>
+    /* =============================================
+       CSS VARIABLES — MOXIE LIFE BRAND PALETTE
+       ============================================= */
+    :root {
+      --bg-deep:       #150f0f;
+      --bg-dark:       #1e1515;
+      --bg-mid:        #2c2020;
+      --bg-card:       #352828;
+      --pink:          #c5728a;
+      --pink-light:    #d4a0b5;
+      --pink-pale:     #e8c4d4;
+      --pink-glow:     rgba(197,114,138,0.35);
+      --pink-border:   rgba(197,114,138,0.4);
+      --white:         #ffffff;
+      --off-white:     #f0e8ec;
+      --text-muted:    rgba(255,255,255,0.6);
+      --text-subtle:   rgba(255,255,255,0.35);
+      --font-heading:  'Playfair Display', Georgia, serif;
+      --font-body:     'Inter', sans-serif;
+      --radius-card:   20px;
+      --transition:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* =============================================
+       RESET & BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    ::selection { background: var(--pink); color: var(--white); }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 10px; }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { cursor: none; font-family: var(--font-body); border: none; outline: none; }
+
+    /* =============================================
+       CUSTOM CURSOR
+       ============================================= */
+    #cursor {
+      position: fixed;
+      width: 12px; height: 12px;
+      background: var(--pink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
+    }
+    #cursor-follower {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--pink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.25s var(--transition), width 0.3s, height 0.3s;
+      opacity: 0.7;
+    }
+
+    /* =============================================
+       SCROLL PROGRESS BAR
+       ============================================= */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--pink), var(--pink-light));
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* =============================================
+       NAVIGATION
+       ============================================= */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      padding: 22px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s ease, backdrop-filter 0.4s ease, padding 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(21, 15, 15, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 60px;
+      border-bottom: 1px solid var(--pink-border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--white);
+    }
+    .nav-logo span { color: var(--pink); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--pink);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      padding: 11px 28px;
+      background: var(--pink);
+      color: var(--white);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    }
+    .nav-cta:hover {
+      background: var(--pink-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--pink-glow);
+    }
+
+    /* Mobile hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg-deep);
+      z-index: 850;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: var(--white);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--pink); }
+
+    /* =============================================
+       TICKER / MARQUEE
+       ============================================= */
+    .ticker-wrap {
+      overflow: hidden;
+      background: var(--bg-mid);
+      border-bottom: 1px solid var(--pink-border);
+      padding: 10px 0;
+      white-space: nowrap;
+    }
+    .ticker {
+      display: inline-flex;
+      animation: ticker-scroll 30s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 24px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pink);
+    }
+    .ticker-dot {
+      width: 6px; height: 6px;
+      background: var(--pink);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* =============================================
+       HERO SECTION
+       ============================================= */
+    #hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 120px 60px 80px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(197,114,138,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(197,114,138,0.1) 0%, transparent 60%),
+        linear-gradient(160deg, #1e0f12 0%, #150f0f 40%, #1a1010 100%);
+    }
+
+    /* Animated particles canvas */
+    #particles-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Light ray effect */
+    .light-rays {
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(from 210deg at 50% -10%, transparent 0deg, rgba(197,114,138,0.06) 20deg, transparent 40deg, transparent 180deg);
+      pointer-events: none;
+      animation: ray-rotate 20s linear infinite;
+    }
+    @keyframes ray-rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 20px;
+      border: 1px solid var(--pink-border);
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pink-light);
+      margin-bottom: 28px;
+      backdrop-filter: blur(10px);
+      background: rgba(197,114,138,0.08);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px;
+      background: var(--pink);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      color: var(--white);
+      opacity: 0;
+      transform: translateX(-80px);
+    }
+    .hero-title .accent { color: var(--pink); }
+    .hero-title .italic { font-style: italic; }
+
+    .hero-sub {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 620px;
+      margin: 0 auto 44px;
+      font-weight: 300;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .btn-primary {
+      padding: 16px 40px;
+      background: var(--pink);
+      color: var(--white);
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px var(--pink-glow);
+    }
+    .btn-primary:hover::before { opacity: 1; }
+
+    .btn-secondary {
+      padding: 16px 40px;
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid var(--pink-border);
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .btn-secondary:hover {
+      border-color: var(--pink);
+      color: var(--pink);
+      box-shadow: 0 0 30px var(--pink-glow);
+      transform: translateY(-3px);
+    }
+
+    /* Gold/pink line animation under hero */
+    .hero-line {
+      position: absolute;
+      bottom: 60px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+    }
+    .hero-line span {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+    .scroll-arrow {
+      width: 24px; height: 24px;
+      border-right: 1.5px solid var(--pink);
+      border-bottom: 1.5px solid var(--pink);
+      transform: rotate(45deg);
+      animation: bounce-arrow 1.8s ease-in-out infinite;
+    }
+    @keyframes bounce-arrow {
+      0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
+      50% { transform: rotate(45deg) translateY(8px); opacity: 0.4; }
+    }
+
+    /* =============================================
+       SECTION COMMONS
+       ============================================= */
+    .section {
+      padding: 120px 60px;
+      position: relative;
+    }
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 16px;
+    }
+    .section-tag::before {
+      content: '';
+      display: block;
+      width: 28px; height: 1px;
+      background: var(--pink);
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 560px;
+      font-weight: 300;
+    }
+
+    /* =============================================
+       FAMILY FIRST STICKY SECTION
+       ============================================= */
+    #family-first {
+      padding: 0;
+      height: 300vh;
+      position: relative;
+    }
+    .family-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .family-track {
+      display: flex;
+      width: max-content;
+      will-change: transform;
+    }
+    .family-panel {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 60px;
+      flex-shrink: 0;
+    }
+
+    .fp-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1200px;
+      width: 100%;
+    }
+    .fp-text .section-title { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+    .fp-text .italic { font-style: italic; }
+    .fp-text .accent { color: var(--pink); }
+
+    .fp-big-text {
+      font-family: var(--font-heading);
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-weight: 900;
+      line-height: 0.9;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(197,114,138,0.3);
+      letter-spacing: -0.04em;
+      position: absolute;
+      top: 50%;
+      right: -40px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .fp-image-stack {
+      position: relative;
+      height: 480px;
+    }
+    .fp-img-card {
+      position: absolute;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--pink-border);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--pink-border);
+    }
+    .fp-img-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .fp-img-card:nth-child(1) {
+      width: 300px; height: 380px;
+      top: 0; left: 0;
+    }
+    .fp-img-card:nth-child(2) {
+      width: 240px; height: 300px;
+      top: 80px; right: 0;
+      border: 1px solid var(--pink-border);
+    }
+
+    .fp-stat-badge {
+      position: absolute;
+      bottom: 20px; left: 20px;
+      background: rgba(21,15,15,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--pink-border);
+      border-radius: 14px;
+      padding: 16px 22px;
+      z-index: 10;
+    }
+    .fp-stat-badge strong {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: var(--pink);
+      line-height: 1;
+    }
+    .fp-stat-badge span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* =============================================
+       INSURANCE PLANS
+       ============================================= */
+    #plans {
+      background: var(--bg-dark);
+    }
+    .plans-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+    .plans-header .section-tag { justify-content: center; }
+    .plans-header .section-title { margin: 0 auto 16px; }
+    .plans-header .section-desc { margin: 0 auto; text-align: center; }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .plan-card {
+      background: rgba(53,40,40,0.5);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--pink-border);
+      border-radius: var(--radius-card);
+      padding: 44px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s var(--transition), box-shadow 0.4s;
+      will-change: transform;
+      transform-style: preserve-3d;
+    }
+    .plan-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(197,114,138,0.12) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .plan-card:hover::before { opacity: 1; }
+    .plan-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 40px var(--pink-glow);
+    }
+
+    .plan-card.featured {
+      border-color: var(--pink);
+      background: rgba(197,114,138,0.12);
+    }
+    .plan-featured-tag {
+      position: absolute;
+      top: 22px; right: 22px;
+      padding: 5px 14px;
+      background: var(--pink);
+      color: var(--white);
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .plan-icon {
+      width: 54px; height: 54px;
+      background: rgba(197,114,138,0.15);
+      border: 1px solid var(--pink-border);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      font-size: 1.4rem;
+      transition: background 0.3s;
+    }
+    .plan-card:hover .plan-icon {
+      background: rgba(197,114,138,0.3);
+    }
+
+    .plan-name {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .plan-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 36px;
+    }
+    .plan-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(197,114,138,0.1);
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features li::before {
+      content: '✦';
+      color: var(--pink);
+      font-size: 0.7rem;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .plan-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .plan-btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--pink-border);
+      color: var(--white);
+    }
+    .plan-btn-outline:hover {
+      border-color: var(--pink);
+      color: var(--pink);
+      box-shadow: 0 0 20px var(--pink-glow);
+    }
+    .plan-btn-fill {
+      background: var(--pink);
+      color: var(--white);
+    }
+    .plan-btn-fill:hover {
+      background: var(--pink-light);
+      box-shadow: 0 10px 30px var(--pink-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Animated border on featured */
+    @keyframes border-glow {
+      0%, 100% { box-shadow: 0 0 20px var(--pink-glow), inset 0 0 20px rgba(197,114,138,0.05); }
+      50% { box-shadow: 0 0 40px var(--pink-glow), inset 0 0 30px rgba(197,114,138,0.1); }
+    }
+    .plan-card.featured { animation: border-glow 3s ease-in-out infinite; }
+
+    /* =============================================
+       STATS / WHY US
+       ============================================= */
+    #stats {
+      text-align: center;
+      background: var(--bg-deep);
+    }
+    .stats-header {
+      margin-bottom: 72px;
+    }
+    .stats-header .section-tag { justify-content: center; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      background: var(--pink-border);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .stat-item {
+      background: var(--bg-dark);
+      padding: 48px 28px;
+      position: relative;
+    }
+    .stat-item:hover { background: var(--bg-card); }
+    .stat-icon {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      display: block;
+      filter: grayscale(0.3);
+    }
+    .stat-number {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 800;
+      color: var(--pink);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .features-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .feature-item {
+      padding: 36px 28px;
+      background: var(--bg-card);
+      border: 1px solid rgba(197,114,138,0.12);
+      border-radius: 18px;
+      text-align: left;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .feature-item:hover {
+      border-color: var(--pink-border);
+      transform: translateY(-6px);
+    }
+    .feature-icon {
+      width: 48px; height: 48px;
+      background: rgba(197,114,138,0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+    .feature-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* =============================================
+       COVERAGE CALCULATOR
+       ============================================= */
+    #calculator {
+      background: var(--bg-mid);
+    }
+    .calc-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .calc-box {
+      background: rgba(53,40,40,0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--pink-border);
+      border-radius: 28px;
+      padding: 56px 60px;
+      margin-top: 48px;
+    }
+    .calc-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      margin-bottom: 36px;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .calc-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .calc-field input,
+    .calc-field select {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(21,15,15,0.6);
+      border: 1px solid var(--pink-border);
+      border-radius: 12px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      -webkit-appearance: none;
+    }
+    .calc-field input:focus,
+    .calc-field select:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 20px var(--pink-glow);
+    }
+    .calc-field select option { background: var(--bg-dark); }
+    .calc-slider-wrap label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .calc-slider-wrap label span { color: var(--pink); font-size: 1rem; }
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 4px;
+      background: rgba(197,114,138,0.2);
+      border-radius: 4px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      background: var(--pink);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--pink-glow);
+    }
+    .calc-result {
+      background: rgba(197,114,138,0.1);
+      border: 1px solid var(--pink-border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-top: 24px;
+      display: none;
+    }
+    .calc-result.show { display: block; }
+    .calc-result-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .calc-result-amount {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--pink);
+    }
+    .calc-result-note {
+      font-size: 0.82rem;
+      color: var(--text-subtle);
+      margin-top: 6px;
+    }
+
+    /* =============================================
+       TESTIMONIALS
+       ============================================= */
+    #testimonials {
+      background: var(--bg-dark);
+      overflow: hidden;
+    }
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .testimonials-header .section-tag { justify-content: center; }
+
+    .testimonials-slider {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .testimonials-track {
+      display: flex;
+      gap: 28px;
+      transition: transform 0.6s var(--transition);
+    }
+    .testimonial-card {
+      min-width: calc(33.333% - 19px);
+      background: rgba(53,40,40,0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--pink-border);
+      border-radius: 22px;
+      padding: 40px 36px;
+      flex-shrink: 0;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .testimonial-card:hover {
+      transform: scale(1.02);
+      border-color: var(--pink);
+    }
+    .tc-stars {
+      color: var(--pink);
+      font-size: 1rem;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+    .tc-quote {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 500;
+      line-height: 1.65;
+      color: var(--off-white);
+      margin-bottom: 28px;
+      font-style: italic;
+    }
+    .tc-quote::before { content: '"'; color: var(--pink); font-size: 1.5rem; line-height: 0; vertical-align: -0.3em; margin-right: 4px; }
+    .tc-quote::after  { content: '"'; color: var(--pink); font-size: 1.5rem; line-height: 0; vertical-align: -0.3em; margin-left: 4px; }
+    .tc-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .tc-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--pink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .tc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .tc-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+    .tc-role {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .slider-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 44px;
+    }
+    .slider-btn {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      border: 1.5px solid var(--pink-border);
+      background: transparent;
+      color: var(--white);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .slider-btn:hover {
+      background: var(--pink);
+      border-color: var(--pink);
+      box-shadow: 0 0 20px var(--pink-glow);
+    }
+    .slider-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .slider-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--pink-border);
+      transition: background 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+    .slider-dot.active {
+      background: var(--pink);
+      transform: scale(1.3);
+    }
+
+    /* =============================================
+       PARALLAX LEGACY SECTION
+       ============================================= */
+    #legacy {
+      position: relative;
+      height: 70vh;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .legacy-bg {
+      position: absolute;
+      inset: -20%;
+      background:
+        linear-gradient(to bottom, var(--bg-dark) 0%, transparent 20%, transparent 80%, var(--bg-dark) 100%),
+        linear-gradient(135deg, #2c1020 0%, #1e1515 50%, #0f0a0a 100%);
+      will-change: transform;
+    }
+    .legacy-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 50% 50%, rgba(197,114,138,0.15) 0%, transparent 70%);
+    }
+    .legacy-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 60px;
+    }
+    .legacy-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      max-width: 800px;
+      margin: 0 auto 28px;
+    }
+    .legacy-title .accent { color: var(--pink); font-style: italic; }
+    .legacy-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin: 0 auto 36px;
+      font-weight: 300;
+    }
+
+    /* Floating particles in legacy section */
+    .legacy-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .lp {
+      position: absolute;
+      width: 4px; height: 4px;
+      background: var(--pink);
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: float-particle 6s ease-in-out infinite;
+    }
+    @keyframes float-particle {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0.4; }
+      33% { transform: translateY(-20px) translateX(10px); opacity: 0.8; }
+      66% { transform: translateY(-40px) translateX(-5px); opacity: 0.2; }
+    }
+
+    /* =============================================
+       FAMILY PROTECTION TIMELINE
+       ============================================= */
+    #timeline {
+      background: var(--bg-deep);
+    }
+    .timeline-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+    .timeline-header .section-tag { justify-content: center; }
+
+    .timeline-track {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--pink), transparent);
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0 20px;
+      margin-bottom: 56px;
+      align-items: start;
+    }
+    .timeline-item:nth-child(odd) .ti-left { text-align: right; }
+    .timeline-item:nth-child(odd) .ti-right { opacity: 0; pointer-events: none; }
+    .timeline-item:nth-child(even) .ti-left { opacity: 0; pointer-events: none; }
+    .timeline-item:nth-child(even) .ti-right { text-align: left; }
+
+    .ti-center {
+      display: flex;
+      justify-content: center;
+      padding-top: 4px;
+    }
+    .ti-dot {
+      width: 20px; height: 20px;
+      background: var(--pink);
+      border-radius: 50%;
+      border: 3px solid var(--bg-deep);
+      box-shadow: 0 0 16px var(--pink-glow);
+      flex-shrink: 0;
+    }
+
+    .ti-content {
+      background: var(--bg-card);
+      border: 1px solid rgba(197,114,138,0.15);
+      border-radius: 16px;
+      padding: 24px 28px;
+      transition: border-color 0.3s;
+    }
+    .ti-content:hover { border-color: var(--pink-border); }
+    .ti-age {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 6px;
+    }
+    .ti-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .ti-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* =============================================
+       CONTACT / QUOTE SECTION
+       ============================================= */
+    #contact {
+      background: var(--bg-dark);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .contact-left .section-title { margin-bottom: 16px; }
+    .contact-left .section-desc { margin-bottom: 40px; }
+
+    .contact-info-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .ci-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 22px;
+      background: var(--bg-card);
+      border: 1px solid rgba(197,114,138,0.12);
+      border-radius: 14px;
+      transition: border-color 0.3s;
+    }
+    .ci-card:hover { border-color: var(--pink-border); }
+    .ci-icon {
+      width: 40px; height: 40px;
+      background: rgba(197,114,138,0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .ci-info span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--text-subtle);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .ci-info strong {
+      font-size: 0.9rem;
+      color: var(--white);
+    }
+
+    /* Form */
+    .quote-form {
+      background: rgba(53,40,40,0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--pink-border);
+      border-radius: 28px;
+      padding: 48px 44px;
+    }
+    .form-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 14px 18px;
+      background: rgba(21,15,15,0.6);
+      border: 1px solid rgba(197,114,138,0.25);
+      border-radius: 12px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 20px var(--pink-glow);
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group select option { background: var(--bg-dark); }
+
+    .form-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--pink);
+      color: var(--white);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 8px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .form-submit:hover {
+      background: var(--pink-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px var(--pink-glow);
+    }
+    .form-submit.success {
+      background: #2e7d52;
+    }
+
+    /* =============================================
+       FOOTER
+       ============================================= */
+    footer {
+      background: var(--bg-deep);
+      border-top: 1px solid var(--pink-border);
+      padding: 72px 60px 32px;
+    }
+
+    /* Top animated line */
+    .footer-top-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--pink), transparent);
+      margin-bottom: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .footer-top-line::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: line-shine 3s ease infinite;
+    }
+    @keyframes line-shine {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+    .footer-brand p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin: 16px 0 24px;
+      max-width: 280px;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 12px;
+    }
+    .social-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--pink-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: all 0.3s;
+    }
+    .social-btn:hover {
+      background: var(--pink);
+      border-color: var(--pink);
+      color: var(--white);
+      transform: translateY(-3px);
+    }
+
+    .footer-col h4 {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-col ul li a {
+      font-size: 0.87rem;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+    .footer-col ul li a:hover { color: var(--pink); }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 28px;
+      border-top: 1px solid rgba(197,114,138,0.1);
+    }
+    .footer-copyright {
+      font-size: 0.82rem;
+      color: var(--text-subtle);
+    }
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-legal a {
+      font-size: 0.82rem;
+      color: var(--text-subtle);
+      transition: color 0.3s;
+    }
+    .footer-legal a:hover { color: var(--pink); }
+
+    /* =============================================
+       FLOATING CHAT BUTTON
+       ============================================= */
+    .chat-float {
+      position: fixed;
+      bottom: 32px; right: 32px;
+      width: 56px; height: 56px;
+      background: var(--pink);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 8px 28px var(--pink-glow);
+      z-index: 800;
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: chat-pulse 3s ease infinite;
+    }
+    .chat-float:hover {
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 16px 40px var(--pink-glow);
+    }
+    @keyframes chat-pulse {
+      0%, 100% { box-shadow: 0 8px 28px var(--pink-glow); }
+      50% { box-shadow: 0 8px 40px rgba(197,114,138,0.6); }
+    }
+
+    /* Trust badges */
+    .trust-badges {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 60px;
+    }
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--bg-card);
+      border: 1px solid rgba(197,114,138,0.15);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: border-color 0.3s;
+    }
+    .trust-badge:hover { border-color: var(--pink-border); color: var(--white); }
+    .trust-badge span:first-child { font-size: 1rem; }
+
+    /* =============================================
+       REVEAL ANIMATIONS
+       ============================================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+    }
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 1024px) {
+      .plans-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .features-row { grid-template-columns: 1fr 1fr; }
+      .fp-content { grid-template-columns: 1fr; gap: 40px; }
+      .fp-image-stack { display: none; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 18px 24px; }
+      nav.scrolled { padding: 12px 24px; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .section { padding: 80px 24px; }
+      #hero { padding: 100px 24px 60px; }
+      .plans-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .features-row { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .calc-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-title { font-size: clamp(2.4rem, 8vw, 3.5rem); }
+      .legacy-content { padding: 0 24px; }
+      .timeline-item { grid-template-columns: 1fr; }
+      .timeline-line, .ti-center { display: none; }
+      .timeline-item:nth-child(even) .ti-left,
+      .timeline-item:nth-child(odd) .ti-right { opacity: 1; pointer-events: auto; }
+      .timeline-item .ti-left { text-align: left !important; }
+      #cursor, #cursor-follower { display: none; }
+      body { cursor: auto; }
+      button { cursor: pointer; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+<div id="cursor-follower"></div>
+
+<!-- Scroll Progress -->
+<div id="progress-bar"></div>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav id="main-nav">
+  <a href="#hero" class="nav-logo">Moxie<span>.</span>Life</a>
+  <ul class="nav-links">
+    <li><a href="#plans">Plans</a></li>
+    <li><a href="#stats">Why Us</a></li>
+    <li><a href="#testimonials">Stories</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get a Quote</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#plans" onclick="closeMobileMenu()">Plans</a>
+  <a href="#stats" onclick="closeMobileMenu()">Why Us</a>
+  <a href="#testimonials" onclick="closeMobileMenu()">Stories</a>
+  <a href="#calculator" onclick="closeMobileMenu()">Calculator</a>
+  <a href="#contact" onclick="closeMobileMenu()">Get a Quote</a>
+</div>
+
+<!-- ============================================================
+     TICKER MARQUEE
+     ============================================================ -->
+<div class="ticker-wrap" style="margin-top: 70px;">
+  <div class="ticker">
+    <div class="ticker-item"><div class="ticker-dot"></div> Protection</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Family</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Security</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Support</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Trust</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Empowerment</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Peace of Mind</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Legacy</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Generational Wealth</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Protection</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Family</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Security</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Support</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Trust</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Empowerment</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Peace of Mind</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Legacy</div>
+    <div class="ticker-item"><div class="ticker-dot"></div> Generational Wealth</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <canvas id="particles-canvas"></canvas>
+  <div class="light-rays"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      Family First — Always
+    </div>
+
+    <h1 class="hero-title">
+      Protect What<br>
+      <span class="accent italic">Matters Most</span>
+    </h1>
+
+    <p class="hero-sub">
+      Luxury life insurance solutions designed to secure your family's future
+      for generations. Premium coverage, personalized for your legacy.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Get Your Quote</a>
+      <a href="#plans" class="btn-secondary">Explore Plans</a>
+    </div>
+  </div>
+
+  <div class="hero-line" id="hero-scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAMILY FIRST STICKY SCROLL
+     ============================================================ -->
+<section id="family-first">
+  <div class="family-sticky">
+    <div class="family-track" id="family-track">
+
+      <!-- Panel 1 -->
+      <div class="family-panel" style="background: var(--bg-deep);">
+        <div class="fp-content">
+          <div class="fp-text">
+            <div class="section-tag">Our Promise</div>
+            <h2 class="section-title">
+              Family <span class="accent">First.</span><br>
+              <span class="italic">Always.</span>
+            </h2>
+            <p class="section-desc">
+              Your family is your greatest legacy. We build insurance solutions that grow with your life, protecting the people who depend on you — today and for generations to come.
+            </p>
+          </div>
+          <div class="fp-image-stack">
+            <div class="fp-img-card">
+              <img src="https://images.unsplash.com/photo-1511895426328-dc8714191011?w=400&h=500&fit=crop&q=80" alt="Happy family on beach" loading="lazy" />
+            </div>
+            <div class="fp-img-card">
+              <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&h=380&fit=crop&q=80" alt="Family together" loading="lazy" />
+            </div>
+            <div class="fp-stat-badge">
+              <strong>98%</strong>
+              <span>Claims Satisfaction</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2 -->
+      <div class="family-panel" style="background: #1a1212;">
+        <div class="fp-content">
+          <div class="fp-text">
+            <div class="section-tag">Your Legacy</div>
+            <h2 class="section-title">
+              Build Wealth<br>
+              <span class="accent italic">That Endures</span>
+            </h2>
+            <p class="section-desc">
+              Life insurance isn't just protection — it's a wealth-building vehicle. Our whole life and legacy plans accumulate real cash value, giving your family financial strength that compounds over time.
+            </p>
+            <div class="trust-badges" style="justify-content: flex-start; margin-top: 36px;">
+              <div class="trust-badge"><span>🛡️</span> A+ Rated</div>
+              <div class="trust-badge"><span>🏆</span> Award Winning</div>
+              <div class="trust-badge"><span>💎</span> Premium Coverage</div>
+            </div>
+          </div>
+          <div class="fp-image-stack">
+            <div class="fp-img-card">
+              <img src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&h=500&fit=crop&q=80" alt="Multi-generational family" loading="lazy" />
+            </div>
+            <div class="fp-img-card">
+              <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=300&h=380&fit=crop&q=80" alt="Family home" loading="lazy" />
+            </div>
+            <div class="fp-stat-badge">
+              <strong>$2B+</strong>
+              <span>In Coverage Issued</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3 -->
+      <div class="family-panel" style="background: #120f0f;">
+        <div class="fp-content">
+          <div class="fp-text">
+            <div class="section-tag">Expert Guidance</div>
+            <h2 class="section-title">
+              Guided By<br>
+              <span class="accent italic">Trusted Advisors</span>
+            </h2>
+            <p class="section-desc">
+              Every family is unique. Our licensed advisors work alongside you — understanding your goals, your risks, and your vision — to craft a tailored coverage plan that truly fits your life.
+            </p>
+            <a href="#contact" class="btn-primary" style="display: inline-block; margin-top: 32px;">Speak With an Advisor</a>
+          </div>
+          <div class="fp-image-stack">
+            <div class="fp-img-card">
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&q=80" alt="Professional advisor" loading="lazy" />
+            </div>
+            <div class="fp-img-card">
+              <img src="https://images.unsplash.com/photo-1560472355-536de3962603?w=300&h=380&fit=crop&q=80" alt="Family planning" loading="lazy" />
+            </div>
+            <div class="fp-stat-badge">
+              <strong>25k+</strong>
+              <span>Families Protected</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     INSURANCE PLANS
+     ============================================================ -->
+<section id="plans" class="section">
+  <div class="plans-header reveal">
+    <div class="section-tag">Coverage Options</div>
+    <h2 class="section-title">Plans Built for<br><span style="color:var(--pink);font-style:italic;">Every Family</span></h2>
+    <p class="section-desc">Flexible coverage designed to protect what matters most — from term protection to generational wealth-building.</p>
+  </div>
+
+  <div class="plans-grid">
+    <div class="plan-card reveal">
+      <div class="plan-icon">🌱</div>
+      <h3 class="plan-name">Term Life Insurance</h3>
+      <p class="plan-desc">Affordable, pure protection for the years your family needs it most. Lock in your coverage today at the best possible rate.</p>
+      <ul class="plan-features">
+        <li>10, 20, or 30-year terms</li>
+        <li>Tax-free death benefit</li>
+        <li>Convertible to whole life</li>
+        <li>Competitive monthly premiums</li>
+        <li>Coverage from $100K – $10M+</li>
+      </ul>
+      <button class="plan-btn plan-btn-outline">Explore Term Plans</button>
+    </div>
+
+    <div class="plan-card featured reveal">
+      <div class="plan-featured-tag">Most Popular</div>
+      <div class="plan-icon">💎</div>
+      <h3 class="plan-name">Whole Life Insurance</h3>
+      <p class="plan-desc">Permanent coverage that lasts a lifetime, builds guaranteed cash value, and provides tax-advantaged savings for your legacy.</p>
+      <ul class="plan-features">
+        <li>Lifetime guaranteed coverage</li>
+        <li>Builds tax-deferred cash value</li>
+        <li>Fixed, predictable premiums</li>
+        <li>Dividend-earning potential</li>
+        <li>Living benefits included</li>
+      </ul>
+      <button class="plan-btn plan-btn-fill">Get Whole Life Coverage</button>
+    </div>
+
+    <div class="plan-card reveal">
+      <div class="plan-icon">👑</div>
+      <h3 class="plan-name">Family Legacy Plans</h3>
+      <p class="plan-desc">Designed for multi-generational wealth. Combine life insurance with wealth management strategies for lasting impact.</p>
+      <ul class="plan-features">
+        <li>Generational wealth transfer</li>
+        <li>Estate planning integration</li>
+        <li>Irrevocable Life Insurance Trusts</li>
+        <li>Premium financing options</li>
+        <li>Dedicated legacy advisor</li>
+      </ul>
+      <button class="plan-btn plan-btn-outline">Build Your Legacy</button>
+    </div>
+  </div>
+
+  <div class="trust-badges reveal">
+    <div class="trust-badge"><span>🔒</span> AM Best A+ Rated</div>
+    <div class="trust-badge"><span>✅</span> Licensed in All 50 States</div>
+    <div class="trust-badge"><span>🏦</span> FDIC-Equivalent Protection</div>
+    <div class="trust-badge"><span>📋</span> No Hidden Fees</div>
+    <div class="trust-badge"><span>⚡</span> Same-Day Approval Available</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STATS / WHY US
+     ============================================================ -->
+<section id="stats" class="section">
+  <div class="stats-header reveal">
+    <div class="section-tag">By the Numbers</div>
+    <h2 class="section-title">Why Families<br><span style="color:var(--pink);font-style:italic;">Choose Moxie Life</span></h2>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <span class="stat-icon">👨‍👩‍👧‍👦</span>
+      <div class="stat-number" data-target="25000" data-suffix="+">0</div>
+      <div class="stat-label">Families Protected</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-icon">💰</span>
+      <div class="stat-number" data-target="98" data-suffix="%">0</div>
+      <div class="stat-label">Claims Paid</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-icon">⭐</span>
+      <div class="stat-number" data-target="15" data-suffix=" yrs">0</div>
+      <div class="stat-label">Years of Trust</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-icon">🏆</span>
+      <div class="stat-number" data-target="2" data-suffix="B+">0</div>
+      <div class="stat-label">Coverage Issued</div>
+    </div>
+  </div>
+
+  <div class="features-row" style="margin-top: 60px;">
+    <div class="feature-item reveal">
+      <div class="feature-icon">🛡️</div>
+      <h3 class="feature-title">Instant Coverage</h3>
+      <p class="feature-desc">Get covered today. Our streamlined process means same-day approval for most applicants — no medical exam required for qualifying plans.</p>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feature-icon">📊</div>
+      <h3 class="feature-title">Transparent Pricing</h3>
+      <p class="feature-desc">No hidden fees, no surprises. We believe in radical transparency — you'll always know exactly what you're paying and what you're getting.</p>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feature-icon">🤝</div>
+      <h3 class="feature-title">Dedicated Advisor</h3>
+      <p class="feature-desc">Your personal licensed advisor is always just a call away. We're with you through every life event — not just when you buy your policy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     COVERAGE CALCULATOR
+     ============================================================ -->
+<section id="calculator" class="section">
+  <div class="calc-wrap">
+    <div class="reveal">
+      <div class="section-tag" style="justify-content:center;">Interactive Tool</div>
+      <h2 class="section-title" style="text-align:center;">Coverage<br><span style="color:var(--pink);font-style:italic;">Calculator</span></h2>
+      <p class="section-desc" style="text-align:center;margin:0 auto;">Estimate how much coverage your family needs based on your unique situation.</p>
+    </div>
+
+    <div class="calc-box reveal">
+      <h3 class="calc-title">Find Your Ideal Coverage Amount</h3>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>Annual Income ($)</label>
+          <input type="number" id="calc-income" placeholder="e.g. 75000" min="0" />
+        </div>
+        <div class="calc-field">
+          <label>Number of Dependents</label>
+          <select id="calc-dependents">
+            <option value="1">1 dependent</option>
+            <option value="2" selected>2 dependents</option>
+            <option value="3">3 dependents</option>
+            <option value="4">4+ dependents</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>Outstanding Debts ($)</label>
+          <input type="number" id="calc-debt" placeholder="e.g. 150000" min="0" />
+        </div>
+        <div class="calc-field">
+          <label>Coverage Duration</label>
+          <select id="calc-duration">
+            <option value="10">10 years</option>
+            <option value="20" selected>20 years</option>
+            <option value="30">30 years</option>
+            <option value="life">Whole Life</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-slider-wrap">
+        <label>
+          <span>Years Until Retirement</span>
+          <span id="retire-val">20 years</span>
+        </label>
+        <input type="range" id="calc-retire" min="5" max="40" value="20" />
+      </div>
+      <div class="calc-result" id="calc-result">
+        <div class="calc-result-label">Recommended Coverage Amount</div>
+        <div class="calc-result-amount" id="calc-amount">$0</div>
+        <div class="calc-result-note">This is an estimate. Speak with an advisor for a personalized recommendation.</div>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:24px;border-radius:12px;" onclick="calculateCoverage()">Calculate My Coverage</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section id="testimonials" class="section">
+  <div class="testimonials-header reveal">
+    <div class="section-tag">Real Stories</div>
+    <h2 class="section-title">Families Who<br><span style="color:var(--pink);font-style:italic;">Trust Moxie Life</span></h2>
+  </div>
+
+  <div class="testimonials-slider reveal">
+    <div class="testimonials-track" id="testimonials-track">
+
+      <div class="testimonial-card">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-quote">Moxie Life made the whole process effortless. Within 24 hours I had a whole life policy that gave my family real security. Our advisor explained everything with patience and care.</p>
+        <div class="tc-author">
+          <div class="tc-avatar" style="background:#8B4B6B;">M</div>
+          <div>
+            <div class="tc-name">Marcus & Dionne Williams</div>
+            <div class="tc-role">Family of 4 · Whole Life Plan</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-quote">After losing my husband unexpectedly, the claims process with Moxie Life was seamless and compassionate. They truly live their Family First promise. I'm forever grateful.</p>
+        <div class="tc-author">
+          <div class="tc-avatar" style="background:#C5728A;">S</div>
+          <div>
+            <div class="tc-name">Sandra Reeves</div>
+            <div class="tc-role">Single Parent · Term Life Plan</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-quote">As a business owner, I needed a legacy plan that protected both my family and my company. Moxie Life's advisors crafted a solution I never thought possible. Truly premium service.</p>
+        <div class="tc-author">
+          <div class="tc-avatar" style="background:#6B4B8B;">J</div>
+          <div>
+            <div class="tc-name">James & Keisha Thornton</div>
+            <div class="tc-role">Business Owners · Family Legacy Plan</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-quote">We switched from our old provider after our second child was born. The coverage increase was minimal in cost but immense in value. Moxie Life feels like a partner in our future.</p>
+        <div class="tc-author">
+          <div class="tc-avatar" style="background:#4B8B6B;">A</div>
+          <div>
+            <div class="tc-name">Alicia & Robert Chen</div>
+            <div class="tc-role">Growing Family · Whole Life Plan</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="tc-stars">★★★★★</div>
+        <p class="tc-quote">My grandmother left us nothing because she had no plan. I promised myself I'd do better for my kids. Moxie Life helped me build generational wealth I'm proud of.</p>
+        <div class="tc-author">
+          <div class="tc-avatar" style="background:#8B6B4B;">T</div>
+          <div>
+            <div class="tc-name">Tyrone Jackson</div>
+            <div class="tc-role">Father of 3 · Family Legacy Plan</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="slider-controls">
+    <button class="slider-btn" id="prev-btn">&#8592;</button>
+    <div class="slider-dots" id="slider-dots">
+      <div class="slider-dot active" data-index="0"></div>
+      <div class="slider-dot" data-index="1"></div>
+      <div class="slider-dot" data-index="2"></div>
+    </div>
+    <button class="slider-btn" id="next-btn">&#8594;</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     LEGACY PARALLAX
+     ============================================================ -->
+<section id="legacy">
+  <div class="legacy-bg" id="legacy-bg"></div>
+  <div class="legacy-overlay"></div>
+
+  <!-- Floating particles -->
+  <div class="legacy-particles" id="legacy-particles"></div>
+
+  <div class="legacy-content">
+    <h2 class="legacy-title">
+      Build a Legacy That<br>
+      <span class="accent">Lives Beyond You</span>
+    </h2>
+    <p class="legacy-subtitle">
+      Generational wealth doesn't happen by accident. It's built with intention, the right tools, and the right partner.
+    </p>
+    <a href="#contact" class="btn-primary">Secure Your Future</a>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAMILY PROTECTION TIMELINE
+     ============================================================ -->
+<section id="timeline" class="section">
+  <div class="timeline-header reveal">
+    <div class="section-tag">Life Stages</div>
+    <h2 class="section-title">Protection Through<br><span style="color:var(--pink);font-style:italic;">Every Chapter</span></h2>
+  </div>
+
+  <div class="timeline-track">
+    <div class="timeline-line"></div>
+
+    <div class="timeline-item">
+      <div class="ti-left reveal-left">
+        <div class="ti-content">
+          <div class="ti-age">Your 20s</div>
+          <div class="ti-title">Lock In Low Rates Early</div>
+          <p class="ti-desc">The best time to get life insurance is when you're young and healthy. Lock in low premiums that never increase — and start building cash value immediately.</p>
+        </div>
+      </div>
+      <div class="ti-center"><div class="ti-dot"></div></div>
+      <div class="ti-right"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="ti-left"></div>
+      <div class="ti-center"><div class="ti-dot"></div></div>
+      <div class="ti-right reveal-right">
+        <div class="ti-content">
+          <div class="ti-age">New Family</div>
+          <div class="ti-title">Protect Your Growing Household</div>
+          <p class="ti-desc">Marriage and children bring new responsibilities. Expand your coverage to protect your spouse and kids from financial hardship if the unthinkable happens.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="ti-left reveal-left">
+        <div class="ti-content">
+          <div class="ti-age">Your 40s</div>
+          <div class="ti-title">Maximize Your Cash Value</div>
+          <p class="ti-desc">Your whole life policy is building real, accessible wealth. Use policy loans, supplement retirement income, and ensure your mortgage is fully covered.</p>
+        </div>
+      </div>
+      <div class="ti-center"><div class="ti-dot"></div></div>
+      <div class="ti-right"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="ti-left"></div>
+      <div class="ti-center"><div class="ti-dot"></div></div>
+      <div class="ti-right reveal-right">
+        <div class="ti-content">
+          <div class="ti-age">Legacy Stage</div>
+          <div class="ti-title">Transfer Wealth Tax-Efficiently</div>
+          <p class="ti-desc">Your policy becomes the cornerstone of your estate plan — passing wealth to your children and grandchildren free of income tax, debt-free and intact.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT / QUOTE
+     ============================================================ -->
+<section id="contact" class="section">
+  <div class="contact-grid">
+    <!-- Left -->
+    <div class="contact-left reveal-left">
+      <div class="section-tag">Get Started</div>
+      <h2 class="section-title">Get Your Free<br><span style="color:var(--pink);font-style:italic;">Quote Today</span></h2>
+      <p class="section-desc">Take the first step toward securing your family's future. Our advisors respond within 24 hours — often the same day.</p>
+
+      <div class="contact-info-cards" style="margin-top: 36px;">
+        <div class="ci-card">
+          <div class="ci-icon">📞</div>
+          <div class="ci-info">
+            <span>Phone</span>
+            <strong>(800) MOXIE-LIFE</strong>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon">✉️</div>
+          <div class="ci-info">
+            <span>Email</span>
+            <strong>hello@moxielife.com</strong>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon">🕐</div>
+          <div class="ci-info">
+            <span>Response Time</span>
+            <strong>Within 24 Hours</strong>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon">📍</div>
+          <div class="ci-info">
+            <span>Licensed In</span>
+            <strong>All 50 States + DC</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="reveal-right">
+      <div class="quote-form">
+        <h3 class="form-title">Request a Free Quote</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="Jane" />
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Smith" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" placeholder="(555) 000-0000" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="jane@example.com" />
+          </div>
+          <div class="form-group">
+            <label>Coverage Amount Needed</label>
+            <select>
+              <option>$100,000 – $250,000</option>
+              <option>$250,000 – $500,000</option>
+              <option selected>$500,000 – $1 Million</option>
+              <option>$1 Million – $5 Million</option>
+              <option>$5 Million+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Family Size</label>
+            <select>
+              <option>Just Me</option>
+              <option>Me + Partner</option>
+              <option selected>Family (2–3 kids)</option>
+              <option>Large Family (4+ kids)</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Tell Us About Your Goals (optional)</label>
+            <textarea placeholder="E.g. I want to protect my family and start building generational wealth..."></textarea>
+          </div>
+        </div>
+        <button class="form-submit" id="form-submit" onclick="handleFormSubmit(this)">
+          Get My Free Quote →
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-top-line"></div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:1.8rem;">Moxie<span style="color:var(--pink);">.</span>Life</div>
+      <p>Premium life insurance solutions built for modern families. Protecting what matters most — today, tomorrow, and for generations to come.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn" aria-label="Instagram">📷</a>
+        <a href="#" class="social-btn" aria-label="Facebook">📘</a>
+        <a href="#" class="social-btn" aria-label="LinkedIn">💼</a>
+        <a href="#" class="social-btn" aria-label="Twitter">𝕏</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="#">Term Life Insurance</a></li>
+        <li><a href="#">Whole Life Insurance</a></li>
+        <li><a href="#">Family Legacy Plans</a></li>
+        <li><a href="#">Final Expense</a></li>
+        <li><a href="#">Annuities</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Our Team</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">File a Claim</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Policyholder Portal</a></li>
+        <li><a href="#">Find an Advisor</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copyright">© 2026 Moxie Life Insurance. All rights reserved.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Disclosures</a>
+      <a href="#">Accessibility</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Chat -->
+<a href="#contact" class="chat-float" title="Chat with us">💬</a>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ===============================================================
+// GSAP SETUP
+// ===============================================================
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+// ===============================================================
+// LENIS SMOOTH SCROLL (lightweight inline implementation)
+// ===============================================================
+let scrollY = 0;
+let targetY = 0;
+let lerpFactor = 0.1;
+let isScrolling = false;
+
+// We'll use native scroll since Lenis CDN isn't available on cdnjs
+// but we'll apply GSAP's smooth approach
+ScrollTrigger.normalizeScroll(true);
+
+// ===============================================================
+// CUSTOM CURSOR
+// ===============================================================
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('cursor-follower');
+
+if (cursor && follower) {
+  let mx = 0, my = 0, fx = 0, fy = 0;
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX; my = e.clientY;
+    gsap.to(cursor, { x: mx - 6, y: my - 6, duration: 0.1 });
+  });
+  function followCursor() {
+    fx += (mx - fx) * 0.12;
+    fy += (my - fy) * 0.12;
+    gsap.set(follower, { x: fx - 18, y: fy - 18 });
+    requestAnimationFrame(followCursor);
+  }
+  followCursor();
+  document.querySelectorAll('a, button, .plan-card, .testimonial-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      gsap.to(follower, { width: 60, height: 60, opacity: 0.4, duration: 0.3 });
+      gsap.to(cursor, { scale: 1.8, duration: 0.3 });
+    });
+    el.addEventListener('mouseleave', () => {
+      gsap.to(follower, { width: 36, height: 36, opacity: 0.7, duration: 0.3 });
+      gsap.to(cursor, { scale: 1, duration: 0.3 });
+    });
+  });
+}
+
+// ===============================================================
+// SCROLL PROGRESS BAR
+// ===============================================================
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  const pct = (scrolled / maxScroll) * 100;
+  progressBar.style.width = pct + '%';
+});
+
+// ===============================================================
+// NAVIGATION SCROLL STATE
+// ===============================================================
+const nav = document.getElementById('main-nav');
+ScrollTrigger.create({
+  trigger: 'body',
+  start: '80px top',
+  onEnter: () => nav.classList.add('scrolled'),
+  onLeaveBack: () => nav.classList.remove('scrolled'),
+});
+
+// ===============================================================
+// HAMBURGER MENU
+// ===============================================================
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  const spans = hamburger.querySelectorAll('span');
+  if (mobileMenu.classList.contains('open')) {
+    gsap.to(spans[0], { rotation: 45, y: 7, duration: 0.3 });
+    gsap.to(spans[1], { opacity: 0, duration: 0.3 });
+    gsap.to(spans[2], { rotation: -45, y: -7, duration: 0.3 });
+  } else {
+    gsap.to(spans, { rotation: 0, y: 0, opacity: 1, duration: 0.3 });
+  }
+});
+function closeMobileMenu() {
+  mobileMenu.classList.remove('open');
+  const spans = hamburger.querySelectorAll('span');
+  gsap.to(spans, { rotation: 0, y: 0, opacity: 1, duration: 0.3 });
+}
+
+// ===============================================================
+// PARTICLES CANVAS
+// ===============================================================
+(function initParticles() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  for (let i = 0; i < 70; i++) {
+    particles.push({
+      x: Math.random() * 1920,
+      y: Math.random() * 1080,
+      r: Math.random() * 2.5 + 0.5,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: (Math.random() - 0.5) * 0.4 - 0.1,
+      opacity: Math.random() * 0.6 + 0.2,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x % W, p.y % H, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(197,114,138,${p.opacity})`;
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.y < 0) p.y = H;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ===============================================================
+// HERO ANIMATIONS
+// ===============================================================
+const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+heroTl
+  .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 1, delay: 0.3 })
+  .to('.hero-title',  { opacity: 1, x: 0, duration: 1.1 }, '-=0.6')
+  .to('.hero-sub',    { opacity: 1, y: 0, duration: 0.9 }, '-=0.7')
+  .to('.hero-btns',   { opacity: 1, y: 0, duration: 0.9 }, '-=0.5')
+  .to('#hero-scroll-hint', { opacity: 1, duration: 0.8 }, '-=0.3');
+
+// Hero background zoom
+gsap.to('.hero-bg', {
+  scale: 1.12,
+  ease: 'none',
+  scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
+});
+
+// ===============================================================
+// FAMILY FIRST HORIZONTAL SCROLL
+// ===============================================================
+const familyTrack = document.getElementById('family-track');
+if (familyTrack) {
+  const panels = familyTrack.querySelectorAll('.family-panel');
+  const totalWidth = panels.length * 100;
+
+  gsap.to(familyTrack, {
+    x: () => -(familyTrack.scrollWidth - window.innerWidth),
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '#family-first',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1,
+      pin: false,
+      invalidateOnRefresh: true,
+    }
+  });
+}
+
+// ===============================================================
+// LEGACY PARALLAX
+// ===============================================================
+gsap.to('#legacy-bg', {
+  yPercent: 30,
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '#legacy',
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: true,
+  }
+});
+
+// Generate legacy floating particles
+(function generateLegacyParticles() {
+  const container = document.getElementById('legacy-particles');
+  if (!container) return;
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'lp';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      width: ${Math.random() * 6 + 2}px;
+      height: ${Math.random() * 6 + 2}px;
+      animation-delay: ${Math.random() * 4}s;
+      animation-duration: ${Math.random() * 4 + 4}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ===============================================================
+// SCROLL REVEAL ANIMATIONS
+// ===============================================================
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, y: 50 },
+    {
+      opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    }
+  );
+});
+gsap.utils.toArray('.reveal-left').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, x: -60 },
+    {
+      opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    }
+  );
+});
+gsap.utils.toArray('.reveal-right').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, x: 60 },
+    {
+      opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    }
+  );
+});
+gsap.utils.toArray('.reveal-scale').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, scale: 0.88 },
+    {
+      opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.4)',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+    }
+  );
+});
+
+// Stagger plan cards
+gsap.utils.toArray('.plan-card').forEach((card, i) => {
+  gsap.fromTo(card,
+    { opacity: 0, y: 60 },
+    {
+      opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: i * 0.15,
+      scrollTrigger: { trigger: '#plans', start: 'top 75%', toggleActions: 'play none none none' }
+    }
+  );
+});
+
+// ===============================================================
+// ANIMATED COUNTERS
+// ===============================================================
+gsap.utils.toArray('.stat-number').forEach(el => {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 85%',
+    once: true,
+    onEnter: () => {
+      const obj = { val: 0 };
+      gsap.to(obj, {
+        val: target,
+        duration: 2,
+        ease: 'power2.out',
+        onUpdate: () => {
+          const v = Math.round(obj.val);
+          el.textContent = (v >= 1000 ? v.toLocaleString() : v) + suffix;
+        }
+      });
+    }
+  });
+});
+
+// ===============================================================
+// 3D CARD TILT
+// ===============================================================
+document.querySelectorAll('.plan-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    const rotX = -(y / rect.height) * 12;
+    const rotY = (x / rect.width) * 12;
+    gsap.to(card, {
+      rotationX: rotX, rotationY: rotY,
+      transformPerspective: 800,
+      ease: 'power1.out', duration: 0.4
+    });
+  });
+  card.addEventListener('mouseleave', () => {
+    gsap.to(card, { rotationX: 0, rotationY: 0, duration: 0.6, ease: 'elastic.out(1,0.6)' });
+  });
+});
+
+// ===============================================================
+// TESTIMONIALS SLIDER
+// ===============================================================
+const track = document.getElementById('testimonials-track');
+const dots = document.querySelectorAll('.slider-dot');
+let currentSlide = 0;
+let totalSlides = 3;
+let autoSlideInterval;
+
+function goToSlide(n) {
+  currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
+  const cardWidth = track.children[0].offsetWidth + 28;
+  gsap.to(track, { x: -currentSlide * cardWidth, duration: 0.6, ease: 'power3.inOut' });
+  dots.forEach(d => d.classList.remove('active'));
+  if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+}
+
+document.getElementById('prev-btn').addEventListener('click', () => goToSlide(currentSlide - 1));
+document.getElementById('next-btn').addEventListener('click', () => goToSlide(currentSlide + 1));
+dots.forEach(d => d.addEventListener('click', () => goToSlide(parseInt(d.dataset.index))));
+
+autoSlideInterval = setInterval(() => {
+  const next = (currentSlide + 1) % totalSlides;
+  goToSlide(next);
+}, 5000);
+
+track.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+track.addEventListener('mouseleave', () => {
+  autoSlideInterval = setInterval(() => goToSlide((currentSlide + 1) % totalSlides), 5000);
+});
+
+// Touch/swipe
+let touchStartX = 0;
+track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+track.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 40) goToSlide(currentSlide + (diff > 0 ? 1 : -1));
+});
+
+window.addEventListener('resize', () => goToSlide(currentSlide));
+
+// ===============================================================
+// COVERAGE CALCULATOR
+// ===============================================================
+const retireSlider = document.getElementById('calc-retire');
+const retireVal = document.getElementById('retire-val');
+if (retireSlider) {
+  retireSlider.addEventListener('input', () => {
+    retireVal.textContent = retireSlider.value + ' years';
+  });
+}
+
+function calculateCoverage() {
+  const income = parseFloat(document.getElementById('calc-income').value) || 60000;
+  const dependents = parseInt(document.getElementById('calc-dependents').value) || 2;
+  const debt = parseFloat(document.getElementById('calc-debt').value) || 100000;
+  const retireYears = parseInt(document.getElementById('calc-retire').value) || 20;
+
+  const base = income * 10;
+  const dependentMultiplier = 1 + (dependents * 0.15);
+  const recommended = Math.round((base * dependentMultiplier + debt) / 50000) * 50000;
+
+  const resultEl = document.getElementById('calc-result');
+  const amountEl = document.getElementById('calc-amount');
+  resultEl.classList.add('show');
+  gsap.from(resultEl, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
+
+  const obj = { val: 0 };
+  gsap.to(obj, {
+    val: recommended,
+    duration: 1.5,
+    ease: 'power2.out',
+    onUpdate: () => {
+      amountEl.textContent = '$' + Math.round(obj.val).toLocaleString();
+    }
+  });
+}
+
+// ===============================================================
+// FORM SUBMIT ANIMATION
+// ===============================================================
+function handleFormSubmit(btn) {
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '✓ Request Sent — We\'ll Be In Touch!';
+    btn.classList.add('success');
+    btn.disabled = false;
+    gsap.fromTo(btn, { scale: 0.96 }, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.5)' });
+  }, 1500);
+}
+
+// ===============================================================
+// MAGNETIC BUTTON EFFECT
+// ===============================================================
+document.querySelectorAll('.btn-primary, .btn-secondary, .nav-cta').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.3, ease: 'power2.out' });
+  });
+  btn.addEventListener('mouseleave', () => {
+    gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+  });
+});
+
+// ===============================================================
+// MOUSE FOLLOW GLOW (subtle global effect)
+// ===============================================================
+const glow = document.createElement('div');
+glow.style.cssText = `
+  position: fixed;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197,114,138,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+`;
+document.body.appendChild(glow);
+document.addEventListener('mousemove', (e) => {
+  gsap.to(glow, { x: e.clientX, y: e.clientY, duration: 0.8, ease: 'power2.out' });
+});
+
+// ===============================================================
+// REFRESH ScrollTrigger on load
+// ===============================================================
+window.addEventListener('load', () => {
+  ScrollTrigger.refresh();
+});
+</script>
+
+</body>
+</html>
